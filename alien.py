@@ -18,8 +18,6 @@ GAME = False
 def start_game():
     global GAME
     global MENU
-    global hspeed
-    global vspeed
     music.play('newdawn')
     GAME = True
     MENU = False
@@ -35,8 +33,6 @@ def draw():
         screen.draw.text("Click to continue", midbottom=(400,300), width=360, fontsize=48, color="white" )
     elif GAME:
         alien.draw()
-        for bullet in bulletlist:
-            bullet.draw()
     return
 
 def update():
@@ -48,9 +44,6 @@ def update():
         if alien.top < 0 or alien.bottom >= HEIGHT:
             pass
 
-        for bullet in bulletlist:
-            bullet.move_in_direction(2)
-
     elif MENU:
         pass
 
@@ -58,10 +51,7 @@ def update():
 
 def on_mouse_down(pos, button):
     if GAME:
-        bullet = Actor('bullet', alien.pos)
-        bullet.direction = bullet.angle_to(pos)
-        bullet.angle = bullet.direction + 90
-        bulletlist.append(bullet)
+        pass
     elif MENU:
         if button == 1:
             start_game()
