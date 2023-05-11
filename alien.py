@@ -41,13 +41,16 @@ def update():
     if GAME:
         alien.x += alien.hspeed
         alien.y += alien.vspeed
-        if alien.right >= WIDTH or alien.left <= 0:
-            pass
-        if alien.top < 0 or alien.bottom >= HEIGHT:
-            pass
+        if alien.x >= WIDTH or alien.x <= 0:
+            alien.x = alien.x%WIDTH
+        if alien.y < 0 or alien.y >= HEIGHT:
+            alien.y = alien.y%HEIGHT
 
         for bullet in bulletlist:
             bullet.move_in_direction(2)
+
+
+
 
     elif MENU:
         pass
@@ -66,9 +69,15 @@ def on_mouse_down(pos, button):
             start_game()
     return
 
-def on_key_down(key):
-    if key == keys.SPACE:
-        print("Space key pressed...")
+def on_key_up(key):
+    if key == keys.A:
+        alien.hspeed -= 1
+    elif key == keys.D:
+        alien.hspeed += 1
+    elif key == keys.W:
+        alien.vspeed -= 1
+    elif key == keys.S:
+        alien.vspeed += 1
     return
 
 def set_alien_normal():
