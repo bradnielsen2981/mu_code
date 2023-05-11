@@ -46,11 +46,13 @@ def update():
         if alien.y < 0 or alien.y >= HEIGHT:
             alien.y = alien.y%HEIGHT
 
-        for bullet in bulletlist:
+        for bullet in bulletlist: #remove any bullet that is off screen
             bullet.move_in_direction(2)
-
-
-
+            if bullet.x >= WIDTH or bullet.x <= 0:
+                bulletlist.remove(bullet)
+            if bullet.y < 0 or bullet.y >= HEIGHT:
+                bulletlist.remove(bullet)
+        print("Bullets on screen ", len(bulletlist))
 
     elif MENU:
         pass
