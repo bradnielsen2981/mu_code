@@ -1,4 +1,6 @@
 # Write your code here :-)
+import pgzrun
+
 import random
 import math
 from pgzhelper import *
@@ -6,12 +8,14 @@ from pgzhelper import *
 WIDTH = 800
 HEIGHT = 600
 
+#Create an object of the type Actor and give it the variable name "alien"
 alien = Actor('alien')
 alien.x = 400
 alien.y = 300
 alien.hspeed = 0
 alien.vspeed = 0
 
+#create boolean variables to swithc our game
 MENU = True
 GAME = False
 
@@ -24,7 +28,7 @@ def start_game():
     return
 
 currentlevel = 1
-bulletlist = []
+
 
 def draw():
     screen.clear()
@@ -35,10 +39,11 @@ def draw():
         alien.draw()
         for bullet in bulletlist:
             bullet.draw()
+
     return
 
 def update():
-    if GAME:
+    if GAME: #if game is true
         alien.x += alien.hspeed
         alien.y += alien.vspeed
         if alien.x >= WIDTH or alien.x <= 0:
@@ -46,23 +51,28 @@ def update():
         if alien.y < 0 or alien.y >= HEIGHT:
             alien.y = alien.y%HEIGHT
 
-        for bullet in bulletlist: #remove any bullet that is off screen
-            bullet.move_in_direction(2)
+        #remove any bullet that is off screen
+        for bullet in bulletlist: 
+            bullet.move_in_direction(bullet.speed)
             if bullet.x >= WIDTH or bullet.x <= 0:
                 bulletlist.remove(bullet)
-            if bullet.y < 0 or bullet.y >= HEIGHT:
+                del bullet
+            elif bullet.y < 0 or bullet.y >= HEIGHT:
                 bulletlist.remove(bullet)
-        print("Bullets on screen ", len(bulletlist))
+                del bullet
+            
 
-    elif MENU:
+    elif MENU: #if menu is true
         pass
 
     return
 
 def on_mouse_down(pos, button):
     if GAME:
-        pass
+        sounds.eep.play()
         bullet = Actor('bullet', alien.pos)
+        bullet.scale = 0.5
+        bullet.speed = 7
         bullet.direction = bullet.angle_to(pos)
         bullet.angle = bullet.direction + 90
         bulletlist.append(bullet)
@@ -71,23 +81,22 @@ def on_mouse_down(pos, button):
             start_game()
     return
 
-def on_key_up(key):
+def on_key_down(key):
+    print("Key down")
     if key == keys.A:
-        alien.hspeed -= 1
+        if alien.hspeed > -8:
+            alien.hspeed -= 1
     elif key == keys.D:
-        alien.hspeed += 1
+        if alien.hspeed < 8:
+            alien.hspeed += 1
     elif key == keys.W:
-        alien.vspeed -= 1
+        if alien.vspeed > -8:
+            alien.vspeed -= 1
     elif key == keys.S:
-        alien.vspeed += 1
-    return
-
-def set_alien_normal():
-    alien.image = 'alien'
-    return
-
-def set_alien_hurt():
-    sounds.eep.play()
+        if alien.vspeed < 8:
+            alien.vspeed += 1
     return
 
 
+
+pgzrun.go()#
