@@ -57,16 +57,25 @@ def update():
 
         #remove any bullet that is off screen
         for bullet in bulletlist: 
+            for enemy in enemylist:
+                if enemy.colliderect(bullet):
+                    enemylist.remove(enemy)
+                    bulletlist.remove(bullet)
+                    continue
+
             bullet.move_in_direction(bullet.speed)
             if bullet.x >= WIDTH or bullet.x <= 0:
                 bulletlist.remove(bullet)
-                del bullet
+                continue
+                
             elif bullet.y < 0 or bullet.y >= HEIGHT:
                 bulletlist.remove(bullet)
-                del bullet
+                continue
             
         for enemy in enemylist:
             enemy.move_towards(alien, 3)
+        
+
 
         #a better way to get key presses
         '''pressed = pygame.key.get_pressed()
