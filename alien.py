@@ -28,7 +28,7 @@ def start_game():
     music.play('newdawn')
     GAME = True
     MENU = False
-    clock.schedule(CreateEnemy, 5.0) #create a timer
+    clock.schedule(CreateEnemy, 3.0) #create a timer
     return
 
 #draw function is called 60 frames per second
@@ -74,7 +74,7 @@ def update():
                     bulletlist.remove(bullet)
             
         for enemy in enemylist:
-            enemy.move_towards(alien, 3)
+            enemy.move_towards(alien, 3 + currentlevel/10)
         
         #a better way to get key presses using pygame
         pressed = pygame.key.get_pressed()
@@ -139,8 +139,10 @@ def OnKeyPress(pressed): #pygame method of handling key presses
 
 #Create an enemy and then reset timer
 def CreateEnemy():
+    global currentlevel
+    currentlevel += 1
     if GAME:
-        clock.schedule(CreateEnemy, 5.0) #recurring function
+        clock.schedule(CreateEnemy, 5.0 - (currentlevel/10)) #recurring function
         enemy = Actor('spider')
         enemy.x = random.randint(0,1)*WIDTH #0, 800
         enemy.y = random.randint(0,1)*HEIGHT #0, 600
