@@ -9,7 +9,7 @@ WIDTH = 800
 HEIGHT = 600
 
 #Create an object of the type Actor and give it the variable name "alien"
-alien = Actor('alien')
+alien = Actor('ship')
 alien.x = 400
 alien.y = 300
 alien.hspeed = 0
@@ -25,13 +25,15 @@ enemylist = [] #create a list of enemies
 def start_game():
     global GAME
     global MENU
+    global alien
+    
     music.play('newdawn')
     GAME = True
     MENU = False
     clock.schedule(CreateEnemy, 5.0) #create a timer
     return
 
-
+#draw function is called 60 frames per second
 def draw():
     screen.clear()
     screen.blit('spacebackground',(0,0))
@@ -46,6 +48,7 @@ def draw():
             enemy.draw()
     return
 
+#update function is called 60 frames per second
 def update():
     if GAME: #if game is true
         alien.x += alien.hspeed
@@ -57,31 +60,32 @@ def update():
 
         #remove any bullet that is off screen
         for bullet in bulletlist: 
-            for enemy in enemylist:
-                if enemy.colliderect(bullet):
-                    enemylist.remove(enemy)
-                    bulletlist.remove(bullet)
-                    continue
 
             bullet.move_in_direction(bullet.speed)
             if bullet.x >= WIDTH or bullet.x <= 0:
                 bulletlist.remove(bullet)
-                continue
+                continue #skip the remained of the for loop - otherwise the bullet will not exist for collision
                 
             elif bullet.y < 0 or bullet.y >= HEIGHT:
                 bulletlist.remove(bullet)
-                continue
+                continue #skip the remainer of this for loop - otherwise the bullet will not exist for collision
+
+            for enemy in enemylist:
+                if enemy.colliderect(bullet):
+                    enemylist.remove(enemy)
+                    bulletlist.remove(bullet)
             
         for enemy in enemylist:
             enemy.move_towards(alien, 3)
         
+        #a better way to get key presses using pygame
+        pressed = pygame.key.get_pressed()
+        if len(pressed) > 0:
+            OnKeyPress(pressed)
 
-
-        #a better way to get key presses
-        '''pressed = pygame.key.get_pressed()
-        if pressed[pygame.K_w]:
-            print("PYGAME Key pressed")  '''  
-        
+        #a better way to get mouse using pygame
+        mousepos = pygame.mouse.get_pos()
+        alien.angle = alien.angle_to(mousepos) - 90   
 
     elif MENU: #if menu is true
         pass
@@ -102,7 +106,8 @@ def on_mouse_down(pos, button):
             start_game()
     return
 
-def on_key_down(key):
+'''#pygame zero method of handling key presses
+def on_key_down(key): 
     print("Key down")
     if key == keys.A:
         if alien.hspeed > -8:
@@ -117,7 +122,24 @@ def on_key_down(key):
         if alien.vspeed < 8:
             alien.vspeed += 1
     return
+'''
 
+def OnKeyPress(pressed): #pygame method of handling key presses
+    if pressed[pygame.K_a]:
+        if alien.hspeed > -5:
+            alien.hspeed -= 1
+    elif pressed[pygame.K_d]:
+        if alien.hspeed < 5:
+            alien.hspeed += 1
+    elif pressed[pygame.K_w]:
+        if alien.vspeed > -5:
+            alien.vspeed -= 1
+    elif pressed[pygame.K_s]:
+        if alien.vspeed < 5:
+            alien.vspeed += 1
+    return
+
+#Create an enemy and then reset timer
 def CreateEnemy():
     if GAME:
         clock.schedule(CreateEnemy, 5.0) #recurring function
