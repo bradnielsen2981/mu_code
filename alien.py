@@ -1,5 +1,4 @@
 # Write your code here :-)
-import pgzrun
 
 import random
 import math
@@ -97,6 +96,3 @@ def on_key_down(key):
             alien.vspeed += 1
     return
 
-
-
-pgzrun.go()#
