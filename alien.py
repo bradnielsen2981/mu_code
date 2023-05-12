@@ -63,16 +63,18 @@ def update():
             if bullet.x >= WIDTH or bullet.x <= 0:
                 bulletlist.remove(bullet)
                 continue #skip the remained of the for loop - otherwise the bullet will not exist for collision
-                
             elif bullet.y < 0 or bullet.y >= HEIGHT:
                 bulletlist.remove(bullet)
                 continue #skip the remainer of this for loop - otherwise the bullet will not exist for collision
 
+            removebullet = False
             for enemy in enemylist:
-                if enemy.colliderect(bullet):
+                if enemy.colliderect(bullet): 
                     enemylist.remove(enemy)
-                    bulletlist.remove(bullet)
-            
+                    removebullet = True
+            if removebullet:
+                bulletlist.remove(bullet) #need to remove the bullet AFTER all the enemies have been deleted.
+                        
         for enemy in enemylist:
             enemy.move_towards(alien, 3 + currentlevel/10)
         
@@ -140,7 +142,8 @@ def OnKeyPress(pressed): #pygame method of handling key presses
 #Create an enemy and then reset timer
 def CreateEnemy():
     global currentlevel
-    currentlevel += 1
+    if currentlevel < 40:
+        currentlevel += 1
     if GAME:
         clock.schedule(CreateEnemy, 5.0 - (currentlevel/10)) #recurring function
         enemy = Actor('spider')
