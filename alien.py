@@ -1,4 +1,5 @@
 # Write your code here :-)
+#import pgzrun
 
 import random
 import math
@@ -14,9 +15,12 @@ alien.y = 300
 alien.hspeed = 0
 alien.vspeed = 0
 
-#create boolean variables to swithc our game
+#create boolean variables
 MENU = True
 GAME = False
+currentlevel = 1
+bulletlist = [] #global list of bullets
+enemylist = [] #create a list of enemies
 
 def start_game():
     global GAME
@@ -24,9 +28,8 @@ def start_game():
     music.play('newdawn')
     GAME = True
     MENU = False
+    clock.schedule(CreateEnemy, 5.0) #create a timer
     return
-
-currentlevel = 1
 
 
 def draw():
@@ -39,6 +42,8 @@ def draw():
         for bullet in bulletlist:
             bullet.draw()
 
+        for enemy in enemylist:
+            enemy.draw()
     return
 
 def update():
@@ -60,6 +65,14 @@ def update():
                 bulletlist.remove(bullet)
                 del bullet
             
+        for enemy in enemylist:
+            enemy.move_towards(alien, 3)
+
+        #a better way to get key presses
+        '''pressed = pygame.key.get_pressed()
+        if pressed[pygame.K_w]:
+            print("PYGAME Key pressed")  '''  
+        
 
     elif MENU: #if menu is true
         pass
@@ -96,3 +109,13 @@ def on_key_down(key):
             alien.vspeed += 1
     return
 
+def CreateEnemy():
+    if GAME:
+        clock.schedule(CreateEnemy, 5.0) #recurring function
+        enemy = Actor('spider')
+        enemy.x = random.randint(0,1)*WIDTH #0, 800
+        enemy.y = random.randint(0,1)*HEIGHT #0, 600
+        enemylist.append(enemy)
+    return
+
+#pgzrun.go()
