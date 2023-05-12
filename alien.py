@@ -25,8 +25,6 @@ enemylist = [] #create a list of enemies
 def start_game():
     global GAME
     global MENU
-    global alien
-    
     music.play('newdawn')
     GAME = True
     MENU = False
