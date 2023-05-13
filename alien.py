@@ -1,5 +1,5 @@
 # Write your code here :-)
-#import pgzrun
+#import pgzrun #Uncomment to use with VSCODE and see last line of code to also uncomment
 
 import random
 import math
@@ -143,7 +143,7 @@ def OnKeyPress(pressed): #pygame method of handling key presses
 def CreateEnemy():
     global currentlevel
     if currentlevel < 40:
-        currentlevel += 1
+        currentlevel += 1  #decrease time of enemy spawn and increase speed of enemy
     if GAME:
         clock.schedule(CreateEnemy, 5.0 - (currentlevel/10)) #recurring function
         enemy = Actor('spider')
@@ -152,4 +152,4 @@ def CreateEnemy():
         enemylist.append(enemy)
     return
 
-#pgzrun.go()
+#pgzrun.go() #Uncomment to use with VSCODE
