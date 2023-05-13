@@ -77,6 +77,8 @@ def update():
                         
         for enemy in enemylist:
             enemy.move_towards(alien, 3 + currentlevel/10)
+            if enemy.colliderect(alien):
+                enemylist.remove(enemy)
         
         #a better way to get key presses using pygame
         pressed = pygame.key.get_pressed()
@@ -146,10 +148,19 @@ def CreateEnemy():
         currentlevel += 1  #decrease time of enemy spawn and increase speed of enemy
     if GAME:
         clock.schedule(CreateEnemy, 5.0 - (currentlevel/10)) #recurring function
-        enemy = Actor('spider')
-        enemy.x = random.randint(0,1)*WIDTH #0, 800
-        enemy.y = random.randint(0,1)*HEIGHT #0, 600
-        enemylist.append(enemy)
+        for i in range(int(currentlevel/2)):
+            enemy = Actor('spider')
+            enemy.x = random.randint(0,1)*WIDTH
+            if enemy.x == 0:
+                enemy.x -= i*100
+            else: 
+                enemy.x += i*100
+            enemy.y = random.randint(0,1)*HEIGHT #0, 600
+            if enemy.y == 0:
+                enemy.y -= i*100
+            else: 
+                enemy.y += i*100
+            enemylist.append(enemy)
     return
 
 #pgzrun.go() #Uncomment to use with VSCODE
