@@ -98,7 +98,7 @@ def on_mouse_down(pos, button):
     if GAME:
         sounds.eep.play()
         bullet = Actor('bullet', alien.pos)
-        bullet.scale = 0.5
+        bullet.scale = 0.3
         bullet.speed = 7
         bullet.direction = bullet.angle_to(pos)
         bullet.angle = bullet.direction + 90
@@ -147,19 +147,22 @@ def CreateEnemy():
     if currentlevel < 40:
         currentlevel += 1  #decrease time of enemy spawn and increase speed of enemy
     if GAME:
-        clock.schedule(CreateEnemy, 5.0 - (currentlevel/10)) #recurring function
+        clock.schedule(CreateEnemy, 5.0 - (currentlevel/10)) #recurring function speed up over time
+        cornerx = random.randint(0,1)*WIDTH #0, 800
+        cornery = random.randint(0,1)*HEIGHT #0, 600
         for i in range(int(currentlevel/2)):
-            enemy = Actor('spider')
-            enemy.x = random.randint(0,1)*WIDTH
+            enemy = Actor('spider') #create new enemy
+            enemy.scale = 0.6
+            enemy.x = cornerx
             if enemy.x == 0:
-                enemy.x -= i*100
+                enemy.x -= i*50
             else: 
-                enemy.x += i*100
-            enemy.y = random.randint(0,1)*HEIGHT #0, 600
+                enemy.x += i*50
+            enemy.y = cornery
             if enemy.y == 0:
-                enemy.y -= i*100
+                enemy.y -= i*50
             else: 
-                enemy.y += i*100
+                enemy.y += i*50
             enemylist.append(enemy)
     return
 
