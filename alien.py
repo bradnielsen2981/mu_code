@@ -1,6 +1,6 @@
 # Write your code here :-)
 #import pgzrun #Uncomment to use with VSCODE and see last line of code to also uncomment
-
+import pygame
 import random
 import math
 from pgzhelper import *
@@ -22,13 +22,28 @@ currentlevel = 1
 bulletlist = [] #global list of bullets
 enemylist = [] #create a list of enemies
 
+
 def start_game():
     global GAME
     global MENU
-    music.play('newdawn')
-    GAME = True
+    global currentlevel
+    global bulletlist
+    global enemylist
     MENU = False
+    GAME = True
+    currentlevel = 1
+    bulletlist = [] #global list of bullets
+    enemylist = [] #create a list of enemies
     clock.schedule(CreateEnemy, 3.0) #create a timer
+    music.play('newdawn')
+    return
+
+def end_game():
+    global GAME
+    global MENU
+    GAME = False
+    MENU = True
+    music.stop()
     return
 
 #draw function is called 60 frames per second
@@ -36,12 +51,12 @@ def draw():
     screen.clear()
     screen.blit('spacebackground',(0,0))
     if MENU:
+        print("menu")
         screen.draw.text("Click to continue", midbottom=(400,300), width=360, fontsize=48, color="white" )
     elif GAME:
         alien.draw()
         for bullet in bulletlist:
             bullet.draw()
-
         for enemy in enemylist:
             enemy.draw()
     return
@@ -79,6 +94,7 @@ def update():
             enemy.move_towards(alien, 3 + currentlevel/10)
             if enemy.colliderect(alien):
                 enemylist.remove(enemy)
+                end_game()
         
         #a better way to get key presses using pygame
         pressed = pygame.key.get_pressed()
