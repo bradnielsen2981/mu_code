@@ -1,9 +1,10 @@
 # Write your code here :-)
-#import pgzrun #Uncomment to use with VSCODE and see last line of code to also uncomment
+import pgzrun #Uncomment to use with VSCODE and see last line of code to also uncomment
 import pygame
 import random
 import math
 from pgzhelper import *
+
 
 WIDTH = 800
 HEIGHT = 600
@@ -14,10 +15,13 @@ alien.x = 400
 alien.y = 300
 alien.hspeed = 0
 alien.vspeed = 0
+alien.sound = pygame.mixer.Sound("sounds/laser.mp3")
+
 
 #create boolean variables
 MENU = True
 GAME = False
+GAMEOVER = False
 currentlevel = 1
 bulletlist = [] #global list of bullets
 enemylist = [] #create a list of enemies
@@ -41,9 +45,21 @@ def start_game():
 def end_game():
     global GAME
     global MENU
+    global GAMEOVER
     GAME = False
     MENU = True
+    GAMEOVER = False
+    return
+
+def game_over():
+    global GAME
+    global MENU
+    global GAMEOVER
+    GAME = False
+    MENU = False
+    GAMEOVER = True
     music.stop()
+    clock.schedule(end_game, 3.0)
     return
 
 #draw function is called 60 frames per second
@@ -51,7 +67,6 @@ def draw():
     screen.clear()
     screen.blit('spacebackground',(0,0))
     if MENU:
-        print("menu")
         screen.draw.text("Click to continue", midbottom=(400,300), width=360, fontsize=48, color="white" )
     elif GAME:
         alien.draw()
@@ -59,6 +74,8 @@ def draw():
             bullet.draw()
         for enemy in enemylist:
             enemy.draw()
+    elif GAMEOVER:
+        screen.draw.text("Game Over", midbottom=(400,300), width=360, fontsize=48, color="black" )
     return
 
 #update function is called 60 frames per second
@@ -84,7 +101,7 @@ def update():
 
             removebullet = False
             for enemy in enemylist:
-                if enemy.colliderect(bullet): 
+                if enemy.collide_pixel(bullet): 
                     enemylist.remove(enemy)
                     removebullet = True
             if removebullet:
@@ -92,9 +109,9 @@ def update():
                         
         for enemy in enemylist:
             enemy.move_towards(alien, 3 + currentlevel/10)
-            if enemy.colliderect(alien):
+            if enemy.collide_pixel(alien):
                 enemylist.remove(enemy)
-                end_game()
+                game_over()
         
         #a better way to get key presses using pygame
         pressed = pygame.key.get_pressed()
@@ -108,11 +125,14 @@ def update():
     elif MENU: #if menu is true
         pass
 
+    elif GAMEOVER:
+        pass
+
     return
 
-def on_mouse_down(pos, button):
+def on_mouse_up(pos, button):
     if GAME:
-        sounds.eep.play()
+        alien.sound.play()
         bullet = Actor('bullet', alien.pos)
         bullet.scale = 0.3
         bullet.speed = 7
@@ -182,4 +202,4 @@ def CreateEnemy():
             enemylist.append(enemy)
     return
 
-#pgzrun.go() #Uncomment to use with VSCODE
+pgzrun.go() #Uncomment to use with VSCODE
