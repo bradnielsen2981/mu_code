@@ -4,7 +4,7 @@ import pygame
 import random
 import math
 from pgzhelper import *
-
+import bigboss
 
 WIDTH = 800
 HEIGHT = 600
@@ -16,7 +16,6 @@ alien.y = 300
 alien.hspeed = 0
 alien.vspeed = 0
 alien.sound = pygame.mixer.Sound("sounds/laser.mp3")
-
 
 #create boolean variables
 MENU = True
@@ -101,17 +100,26 @@ def update():
 
             removebullet = False
             for enemy in enemylist:
-                if enemy.collide_pixel(bullet): 
-                    enemylist.remove(enemy)
+                if enemy.collide_pixel(bullet) and enemy.explode < 0: #only if enemy is not exploding
+                    enemy.explode = 0 #start enermy explosion
                     removebullet = True
             if removebullet:
                 bulletlist.remove(bullet) #need to remove the bullet AFTER all the enemies have been deleted.
                         
         for enemy in enemylist:
-            enemy.move_towards(alien, 3 + currentlevel/10)
-            if enemy.collide_pixel(alien):
+            if enemy.collide_pixel(alien) and enemy.explode < 0: #only detect collision if enemy is not exploding
                 enemylist.remove(enemy)
                 game_over()
+            else:
+                enemy.move_towards(alien, 3 + currentlevel/10)
+
+            if enemy.explode >= 0 and enemy.explode < 19: #if enemy is exploding
+                enemy.explode += 1
+                enemy.next_image()
+            elif enemy.explode == 19:
+                enemylist.remove(enemy)
+
+
         
         #a better way to get key presses using pygame
         pressed = pygame.key.get_pressed()
@@ -164,16 +172,16 @@ def on_key_down(key):
 
 def OnKeyPress(pressed): #pygame method of handling key presses
     if pressed[pygame.K_a]:
-        if alien.hspeed > -5:
+        if alien.hspeed > -4:
             alien.hspeed -= 1
     elif pressed[pygame.K_d]:
-        if alien.hspeed < 5:
+        if alien.hspeed < 4:
             alien.hspeed += 1
     elif pressed[pygame.K_w]:
-        if alien.vspeed > -5:
+        if alien.vspeed > -4:
             alien.vspeed -= 1
     elif pressed[pygame.K_s]:
-        if alien.vspeed < 5:
+        if alien.vspeed < 4:
             alien.vspeed += 1
     return
 
@@ -190,16 +198,21 @@ def CreateEnemy():
             enemy = Actor('spider') #create new enemy
             enemy.scale = 0.6
             enemy.x = cornerx
+            enemy.images = ['spider'] #create animation slides
+            for i in range(0,19):
+                enemy.images.append('explosion/tile'+str(i))
+            enemy.explode = -1 #set enemy to be unexploded
             if enemy.x == 0:
-                enemy.x -= i*50
+                enemy.x -= i*100
             else: 
-                enemy.x += i*50
+                enemy.x += i*100
             enemy.y = cornery
             if enemy.y == 0:
-                enemy.y -= i*50
+                enemy.y -= i*100
             else: 
-                enemy.y += i*50
+                enemy.y += i*100
             enemylist.append(enemy)
     return
+
 
 pgzrun.go() #Uncomment to use with VSCODE
