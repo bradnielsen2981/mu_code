@@ -1,6 +1,6 @@
 from pgzhelper import *
 
-class BigBoss(Actor):
+class SpaceOctopus(Actor):
 
 
     def __init__(self, image):
@@ -8,7 +8,7 @@ class BigBoss(Actor):
         self.count = 0
         return
     
-    def update(self):
+    def update(self, pos):
         self.move_in_direction(1)
         self.count += 1
         
